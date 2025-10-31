@@ -1,0 +1,381 @@
+{% extends "base-auth.html" %}
+
+{% block title %}Enter Member Details - {{ app_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ==================== MINIMAL CUSTOM STYLES ==================== */
+  .icon-input {
+    display: flex;
+    align-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.7rem;
+  }
+
+  .icon-input i {
+    color: #64748b;
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+  }
+
+  .icon-input input {
+    border: none;
+    flex: 1;
+    outline: none;
+    font-size: 1rem;
+  }
+
+  .icon-input:focus-within {
+    border-color: #1d4ed8;
+    box-shadow: 0 0 0 0.2rem rgba(29, 78, 216, 0.15);
+  }
+
+  .location-btn {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: white;
+    padding: 0.8rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #111827;
+    font-weight: 500;
+  }
+
+  .location-btn:hover {
+    background-color: #f8fafc;
+    border-color: #1d4ed8;
+  }
+
+  .location-btn:active {
+    transform: scale(0.98);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-md-5" style="max-width: 540px;">
+
+  <!-- Page Header -->
+  <div class="mb-4">
+    <h4 class="fw-bold mb-2">Enter Member Details</h4>
+    <p class="text-muted small mb-0">Need to add perfect details</p>
+  </div>
+
+  <!-- Form -->
+  <form method="POST" action="/enter-member-details" id="memberForm">
+
+    <!-- Full Name -->
+    <div class="mb-3">
+      <label for="fullName" class="form-label fw-semibold">Full Name</label>
+      <div class="icon-input">
+        <i class="fas fa-user"></i>
+        <input 
+          type="text" 
+          id="fullName"
+          name="fullName" 
+          placeholder="Enter full name" 
+          required 
+        />
+      </div>
+    </div>
+
+    <!-- Date of Birth -->
+    <div class="mb-3">
+      <label for="dob" class="form-label fw-semibold">Date of Birth</label>
+      <div class="icon-input">
+        <i class="fas fa-calendar-alt"></i>
+        <input 
+          type="text" 
+          id="dob"
+          name="dob" 
+          placeholder="DD/MM/YYYY" 
+          required 
+        />
+      </div>
+    </div>
+
+    <!-- Phone Number -->
+    <div class="mb-3">
+      <label for="phone" class="form-label fw-semibold">Phone number</label>
+      <div class="icon-input">
+        <i class="fas fa-phone-alt"></i>
+        <input 
+          type="tel" 
+          id="phone"
+          name="phone" 
+          placeholder="1234567890" 
+          required 
+        />
+      </div>
+    </div>
+
+    <!-- Gender -->
+    <div class="mb-4">
+      <label class="form-label fw-semibold mb-2">Gender</label>
+      <div class="d-flex gap-3">
+        <div class="form-check">
+          <input 
+            class="form-check-input" 
+            type="radio" 
+            name="gender" 
+            id="male" 
+            value="Male" 
+            checked
+          />
+          <label class="form-check-label fw-semibold" for="male">
+            Male
+          </label>
+        </div>
+        <div class="form-check">
+          <input 
+            class="form-check-input" 
+            type="radio" 
+            name="gender" 
+            id="female" 
+            value="Female"
+          />
+          <label class="form-check-label fw-semibold" for="female">
+            Female
+          </label>
+        </div>
+        <div class="form-check">
+          <input 
+            class="form-check-input" 
+            type="radio" 
+            name="gender" 
+            id="nonbinary" 
+            value="Non-Binary"
+          />
+          <label class="form-check-label fw-semibold" for="nonbinary">
+            Non-Binary
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location Button -->
+    <div class="mb-4">
+      <button type="button" class="location-btn" onclick="getLocation()">
+        <span>
+          <i class="fas fa-crosshairs me-2 text-primary"></i>
+          Use my current location
+        </span>
+        <i class="bi bi-chevron-right text-muted"></i>
+      </button>
+    </div>
+
+    <!-- Address Line 1 -->
+    <div class="mb-3">
+      <label for="address1" class="form-label fw-semibold">Address Line 1</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="address1"
+        name="address1" 
+        placeholder="Enter address" 
+        required
+      />
+    </div>
+
+    <!-- Address Line 2 -->
+    <div class="mb-3">
+      <label for="address2" class="form-label fw-semibold">Address Line 2</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="address2"
+        name="address2" 
+        placeholder="Enter address"
+      />
+    </div>
+
+    <!-- Country and State -->
+    <div class="row g-3 mb-3">
+      <div class="col-6">
+        <label for="country" class="form-label fw-semibold">Country</label>
+        <select class="form-select" id="country" name="country" required>
+          <option value="">Select Country</option>
+          <option value="India">India</option>
+          <option value="Australia">Australia</option>
+          <option value="USA">USA</option>
+        </select>
+      </div>
+      <div class="col-6">
+        <label for="state" class="form-label fw-semibold">State</label>
+        <select class="form-select" id="state" name="state" required>
+          <option value="">Select State</option>
+          <option value="Maharashtra">Maharashtra</option>
+          <option value="New South Wales">New South Wales</option>
+          <option value="California">California</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- City and Pin Code -->
+    <div class="row g-3 mb-4">
+      <div class="col-6">
+        <label for="city" class="form-label fw-semibold">City</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="city"
+          name="city" 
+          placeholder="Enter city" 
+          required
+        />
+      </div>
+      <div class="col-6">
+        <label for="pincode" class="form-label fw-semibold">Pin Code</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="pincode"
+          name="pincode" 
+          placeholder="Enter pin code" 
+          required
+        />
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <button type="submit" class="btn btn-primary rounded-pill w-100 py-3 fw-semibold shadow-sm">
+      Save
+    </button>
+
+  </form>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // ==================== GEOLOCATION FUNCTION ====================
+  function getLocation() {
+    if (navigator.geolocation) {
+      // Show loading state
+      const btn = document.querySelector('.location-btn');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<span><i class="fas fa-spinner fa-spin me-2"></i>Getting location...</span>';
+      btn.disabled = true;
+      
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          
+          console.log('Location found:', { lat, lon });
+          
+          // In production: Use reverse geocoding API to get address
+          // fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=YOUR_API_KEY`)
+          //   .then(response => response.json())
+          //   .then(data => {
+          //     const address = data.results[0].components;
+          //     document.getElementById('address1').value = address.road || '';
+          //     document.getElementById('city').value = address.city || '';
+          //     document.getElementById('state').value = address.state || '';
+          //     document.getElementById('pincode').value = address.postcode || '';
+          //   });
+          
+          // For demo purposes
+          alert(`Location found: ${lat}, ${lon}\n\nIn production, this will auto-fill your address.`);
+          
+          // Reset button
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          alert('Unable to get location. Please enter address manually.');
+          
+          // Reset button
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+        }
+      );
+    } else {
+      alert('Geolocation is not supported by your browser.');
+    }
+  }
+
+  // ==================== DATE INPUT FORMATTER ====================
+  const dobInput = document.getElementById('dob');
+  
+  dobInput.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    
+    if (value.length >= 2) {
+      value = value.substring(0, 2) + '/' + value.substring(2);
+    }
+    if (value.length >= 5) {
+      value = value.substring(0, 5) + '/' + value.substring(5, 9);
+    }
+    
+    e.target.value = value;
+  });
+
+  // ==================== PHONE NUMBER VALIDATION ====================
+  const phoneInput = document.getElementById('phone');
+  
+  phoneInput.addEventListener('input', function(e) {
+    // Only allow numbers
+    e.target.value = e.target.value.replace(/\D/g, '');
+  });
+
+  // ==================== FORM SUBMISSION ====================
+  document.getElementById('memberForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    console.log('Member details submitted:', data);
+    
+    // In production: Send to backend
+    // fetch('/api/member-details', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(data)
+    // })
+    // .then(response => response.json())
+    // .then(result => {
+    //   window.location.href = '/enter-patient-details';
+    // });
+    
+    // For demo purposes
+    alert('Member details saved successfully!');
+    window.location.href = '/enter-patient-details';
+  });
+
+  // ==================== STATE BASED ON COUNTRY ====================
+  document.getElementById('country').addEventListener('change', function() {
+    const stateSelect = document.getElementById('state');
+    const country = this.value;
+    
+    // Clear existing options
+    stateSelect.innerHTML = '<option value="">Select State</option>';
+    
+    // State options based on country
+    const stateOptions = {
+      'India': ['Maharashtra', 'Gujarat', 'Karnataka', 'Tamil Nadu', 'Delhi'],
+      'Australia': ['New South Wales', 'Victoria', 'Queensland', 'Western Australia'],
+      'USA': ['California', 'New York', 'Texas', 'Florida', 'Illinois']
+    };
+    
+    if (stateOptions[country]) {
+      stateOptions[country].forEach(state => {
+        const option = document.createElement('option');
+        option.value = state;
+        option.textContent = state;
+        stateSelect.appendChild(option);
+      });
+    }
+  });
+</script>
+{% endblock %}

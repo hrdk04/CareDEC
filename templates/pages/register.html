@@ -1,0 +1,450 @@
+{% extends "base-auth.html" %}
+
+{% block title %}Sign Up - {{ app_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ==================== MINIMAL CUSTOM STYLES ==================== */
+  body {
+    background-color: #f9fafb;
+  }
+
+  .signup-container {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+  .form-check-input{
+    color: #d67b0dff;
+  }
+
+  .signup-card {
+    max-width: 480px;
+    width: 100%;
+  }
+
+  .password-toggle {
+    cursor: pointer;
+    color: #6b7280;
+  }
+
+  .password-toggle:hover {
+    color: #1d4ed8;
+  }
+
+  @media (max-width: 576px) {
+    .signup-container {
+      padding: 1rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container signup-container">
+  <div class="signup-card">
+    
+    <!-- Card -->
+    <div class="card border-0 shadow-sm rounded-3">
+      <div class="card-body p-4 p-md-5">
+        
+        <!-- Header -->
+        <div class="text-center mb-4">
+          <h2 class="fw-bold mb-2" id="signup-title" style="text-align: left;">Sign Up</h2>
+          <p class="text-muted mb-0" id="welcome-text" style="text-align: left;">Welcome to CareDac</p>
+        </div>
+
+        <!-- Signup Form -->
+        <form id="signupForm">
+
+          <!-- Full Name -->
+          <div class="mb-3">
+            <label for="fullName" class="form-label fw-semibold" id="label-name">Full Name</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-person text-muted"></i>
+              </span>
+              <input 
+                type="text" 
+                id="fullName"
+                name="fullName"
+                class="form-control border-start-0" 
+                placeholder="Enter full name" 
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Date of Birth -->
+          <div class="mb-3">
+            <label for="dob" class="form-label fw-semibold" id="label-dob">Date of Birth</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-calendar3 text-muted"></i>
+              </span>
+              <input 
+                type="text" 
+                id="dob"
+                name="dob"
+                class="form-control border-start-0" 
+                placeholder="DD/MM/YYYY" 
+                maxlength="10"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label for="email" class="form-label fw-semibold" id="label-email">Email</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-envelope text-muted"></i>
+              </span>
+              <input 
+                type="email" 
+                id="email"
+                name="email"
+                class="form-control border-start-0" 
+                placeholder="Enter email" 
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Mobile Number -->
+          <div class="mb-3">
+            <label for="mobile" class="form-label fw-semibold" id="label-mobile">Mobile Number</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-telephone text-muted"></i>
+              </span>
+              <input 
+                type="tel" 
+                id="mobile"
+                name="mobile"
+                class="form-control border-start-0" 
+                placeholder="Enter mobile number" 
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label for="password" class="form-label fw-semibold" id="label-password">Password</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-lock text-muted"></i>
+              </span>
+              <input 
+                type="password" 
+                id="password"
+                name="password"
+                class="form-control border-start-0 border-end-0" 
+                placeholder="Enter password"
+                required
+              />
+              <button 
+                class="btn border bg-white password-toggle" 
+                type="button" 
+                onclick="togglePassword('password', this)"
+                tabindex="-1"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label fw-semibold" id="label-confirm">Confirm Password</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-lock text-muted"></i>
+              </span>
+              <input 
+                type="password" 
+                id="confirmPassword"
+                name="confirmPassword"
+                class="form-control border-start-0 border-end-0" 
+                placeholder="Confirm password"
+                required
+              />
+              <button 
+                class="btn border bg-white password-toggle" 
+                type="button" 
+                onclick="togglePassword('confirmPassword', this)"
+                tabindex="-1"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Gender -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold mb-2" id="label-gender">Gender</label>
+            <div class="d-flex gap-3 flex-wrap">
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="gender" 
+                  id="male" 
+                  value="Male" 
+                  checked
+                />
+                <label class="form-check-label fw-semibold" for="male" id="label-male">
+                  Male
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="gender" 
+                  id="female" 
+                  value="Female"
+                />
+                <label class="form-check-label fw-semibold" for="female" id="label-female">
+                  Female
+                </label>
+              </div>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="gender" 
+                  id="nonbinary" 
+                  value="Non-Binary"
+                />
+                <label class="form-check-label fw-semibold" for="nonbinary" id="label-nonbinary">
+                  Non-Binary
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Terms and Conditions -->
+          <div class="mb-4">
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="terms-check"
+                required
+              />
+              <label class="form-check-label small" for="terms-check" id="label-terms">
+                By continuing, you agree to our <a href="#" class="text-primary">Terms and Conditions</a>
+              </label>
+            </div>
+          </div>
+
+          <!-- Sign Up Button -->
+          <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-semibold mb-3" id="btn-signup">
+            Sign Up
+          </button>
+
+          <!-- Divider -->
+          <div class="text-center">
+            <small class="text-muted" id="label-login-text">Already have an account?</small>
+            <a href="/login" class="text-primary text-decoration-none fw-semibold ms-1">Login</a>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // ==================== PASSWORD TOGGLE ====================
+  function togglePassword(id, el) {
+    const input = document.getElementById(id);
+    const icon = el.querySelector("i");
+    
+    if (input.type === "password") {
+      input.type = "text";
+      icon.classList.replace("bi-eye", "bi-eye-slash");
+    } else {
+      input.type = "password";
+      icon.classList.replace("bi-eye-slash", "bi-eye");
+    }
+  }
+
+  // ==================== DATE OF BIRTH FORMATTER ====================
+  const dobInput = document.getElementById('dob');
+  
+  dobInput.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    
+    if (value.length >= 2) {
+      value = value.substring(0, 2) + '/' + value.substring(2);
+    }
+    if (value.length >= 5) {
+      value = value.substring(0, 5) + '/' + value.substring(5, 9);
+    }
+    
+    e.target.value = value;
+  });
+
+  // ==================== PHONE NUMBER VALIDATION ====================
+  const mobileInput = document.getElementById('mobile');
+  
+  mobileInput.addEventListener('input', function(e) {
+    // Only allow numbers
+    e.target.value = e.target.value.replace(/\D/g, '');
+  });
+
+  // ==================== MULTI-LANGUAGE SUPPORT ====================
+  const lang = localStorage.getItem("lang") || "en";
+
+  const text = {
+    en: { 
+      title: "Sign Up", 
+      welcome: "Welcome to CareDac", 
+      name: "Full Name", 
+      dob: "Date of Birth", 
+      email: "Email", 
+      mobile: "Mobile Number", 
+      password: "Password", 
+      confirm: "Confirm Password", 
+      gender: "Gender", 
+      male: "Male", 
+      female: "Female", 
+      nonbinary: "Non-Binary", 
+      terms: "By continuing, you agree to our Terms and Conditions", 
+      signup: "Sign Up", 
+      logintext: "Already have an account?" 
+    },
+    ms: { 
+      title: "Daftar", 
+      welcome: "Selamat datang ke CareDac", 
+      name: "Nama Penuh", 
+      dob: "Tarikh Lahir", 
+      email: "E-mel", 
+      mobile: "Nombor Telefon", 
+      password: "Kata Laluan", 
+      confirm: "Sahkan Kata Laluan", 
+      gender: "Jantina", 
+      male: "Lelaki", 
+      female: "Perempuan", 
+      nonbinary: "Bukan Binari", 
+      terms: "Dengan meneruskan, anda bersetuju dengan Terma dan Syarat kami", 
+      signup: "Daftar", 
+      logintext: "Sudah mempunyai akaun?" 
+    },
+    th: { 
+      title: "สมัครสมาชิก", 
+      welcome: "ยินดีต้อนรับสู่ CareDac", 
+      name: "ชื่อเต็ม", 
+      dob: "วันเดือนปีเกิด", 
+      email: "อีเมล", 
+      mobile: "หมายเลขโทรศัพท์", 
+      password: "รหัสผ่าน", 
+      confirm: "ยืนยันรหัสผ่าน", 
+      gender: "เพศ", 
+      male: "ชาย", 
+      female: "หญิง", 
+      nonbinary: "ไม่ระบุเพศ", 
+      terms: "เมื่อดำเนินการต่อ คุณยอมรับข้อกำหนดและเงื่อนไขของเรา", 
+      signup: "สมัครสมาชิก", 
+      logintext: "มีบัญชีอยู่แล้ว?" 
+    },
+    id: { 
+      title: "Daftar", 
+      welcome: "Selamat datang di CareDac", 
+      name: "Nama Lengkap", 
+      dob: "Tanggal Lahir", 
+      email: "Email", 
+      mobile: "Nomor Ponsel", 
+      password: "Kata Sandi", 
+      confirm: "Konfirmasi Kata Sandi", 
+      gender: "Jenis Kelamin", 
+      male: "Pria", 
+      female: "Wanita", 
+      nonbinary: "Non-Biner", 
+      terms: "Dengan melanjutkan, Anda setuju dengan Syarat dan Ketentuan kami", 
+      signup: "Daftar", 
+      logintext: "Sudah punya akun?" 
+    }
+  };
+
+  // Apply language
+  const t = text[lang];
+  if (t) {
+    document.getElementById("signup-title").textContent = t.title;
+    document.getElementById("welcome-text").textContent = t.welcome;
+    document.getElementById("label-name").textContent = t.name;
+    document.getElementById("label-dob").textContent = t.dob;
+    document.getElementById("label-email").textContent = t.email;
+    document.getElementById("label-mobile").textContent = t.mobile;
+    document.getElementById("label-password").textContent = t.password;
+    document.getElementById("label-confirm").textContent = t.confirm;
+    document.getElementById("label-gender").textContent = t.gender;
+    document.getElementById("label-male").textContent = t.male;
+    document.getElementById("label-female").textContent = t.female;
+    document.getElementById("label-nonbinary").textContent = t.nonbinary;
+    document.getElementById("label-terms").childNodes[0].textContent = t.terms + " ";
+    document.getElementById("btn-signup").textContent = t.signup;
+    document.getElementById("label-login-text").textContent = t.logintext;
+  }
+
+  // ==================== FORM SUBMISSION WITH FLOW CONTROL ====================
+  document.getElementById('signupForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    // Validate passwords match
+    if (data.password !== data.confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    // Validate password strength (optional)
+    if (data.password.length < 6) {
+      alert('Password must be at least 6 characters long');
+      return;
+    }
+    
+    console.log('Signup data:', data);
+    
+    // ==================== IMPORTANT: FLOW CONTROL ====================
+    // Store the flow context and user data
+    localStorage.setItem('authFlow', 'signup');
+    localStorage.setItem('userEmail', data.email);
+    localStorage.setItem('userName', data.fullName);
+    
+    // Store signup data temporarily (will be saved after OTP verification)
+    sessionStorage.setItem('signupData', JSON.stringify(data));
+    
+    // In production: Send to backend
+    // fetch('/api/signup', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(data)
+    // })
+    // .then(response => response.json())
+    // .then(result => {
+    //   if (result.success) {
+    //     // Send OTP and redirect
+    //     window.location.href = '/otp?from=signup';
+    //   }
+    // });
+    
+    // For demo: Redirect to OTP page with context
+    alert('Registration initiated! Please verify your email with OTP...');
+    window.location.href = '/otp?from=signup';
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}Caregiver Details - {{ app_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ==================== MINIMAL CUSTOM STYLES ==================== */
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid #fc9255;
+  }
+
+  .badge-check {
+    color: #22c55e;
+    font-size: 0.9rem;
+  }
+
+  .rating i {
+    color: #fbbf24;
+  }
+
+  .highlight-item i {
+    color: #22c55e;
+    margin-right: 6px;
+  }
+
+  .detail-label {
+    font-weight: 200;
+    color: #818181;
+  }
+
+  @media (max-width: 768px) {
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-md-5">
+
+  <!-- ==================== PROFILE HEADER ==================== -->
+  <div class="card border shadow-sm rounded-3 mb-4">
+    <div class="card-body p-4">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-8">
+          <div class="d-flex align-items-center gap-3 flex-wrap">
+            <img 
+              src="https://randomuser.me/api/portraits/women/45.jpg" 
+              alt="Paula Mora" 
+              class="profile-avatar"
+            />
+            <div>
+              <p class="mb-1 text-uppercase text-muted small fw-semibold">Part-time</p>
+              <h5 class="mb-2 fw-bold">Paula Mora</h5>
+              <div class="d-flex align-items-center mb-2">
+                <div class="rating me-2">
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                </div>
+                <span class="fw-semibold">(5)</span>
+              </div>
+              <p class="badge-check mb-0">
+                <i class="bi bi-shield-check"></i> 
+                Background check done
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <a href="/book-user" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            Book Paula
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ABOUT PAULA ==================== -->
+  <div class="card border shadow-sm rounded-3 mb-4">
+    <div class="card-body p-4">
+      <h6 class="fw-semibold mb-3">About Paula</h6>
+      
+      <div class="row g-3 mb-3 small">
+        <div class="col-6 col-md-4 col-lg-2">
+          <span class="detail-label">Hourly rate:</span>
+          <div class="fw-semibold">$30–40/hr</div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <span class="detail-label">Years exp.:</span>
+          <div class="fw-semibold">5</div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <span class="detail-label">Age:</span>
+          <div class="fw-semibold">33 yrs</div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <span class="detail-label">Gender:</span>
+          <div class="fw-semibold">Female</div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <span class="detail-label">Language:</span>
+          <div class="fw-semibold">English</div>
+        </div>
+      </div>
+      
+      <p class="mb-0 text-muted">
+        I am a 22-year-old graduate student pursuing my Master's in Social Work.
+        I have 5 years of experience caring for children from newborn–7 years.
+        I am an animal lover, so pets are no problem! I have my own vehicle and
+        am willing to drive children if necessary. I am more than happy to help
+        with housework while watching your children! I am a non-smoker and have
+        received my COVID-19 vaccine!
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== CONNECT PAULA ==================== -->
+  <div class="card border shadow-sm rounded-3 mb-4">
+    <div class="card-body p-4">
+      <h6 class="fw-semibold mb-3">Connect Paula</h6>
+      
+      <div class="row g-3 mb-3 small">
+        <div class="col-md-6">
+          <i class="bi bi-calendar3 text-primary me-1"></i>
+          <span class="detail-label">Availability Dates:</span>
+          <span class="fw-semibold">Jan 24th – Feb 9th</span>
+        </div>
+        <div class="col-md-6">
+          <i class="bi bi-clock text-primary me-1"></i>
+          <span class="detail-label">Time:</span>
+          <span class="fw-semibold">9:00 AM – 5:00 PM</span>
+        </div>
+      </div>
+      
+      <p class="text-muted small mb-0">
+        Send Paula a message <a href="#" class="text-danger fw-semibold">here</a>.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== REVIEWS ==================== -->
+  <div class="card border shadow-sm rounded-3 mb-4">
+    <div class="card-body p-4">
+      <h6 class="fw-semibold mb-3">Reviews</h6>
+      
+      <div class="d-flex align-items-center mb-3">
+        <span class="fw-bold me-2">(5.0)</span>
+        <div class="rating me-2">
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+        </div>
+        <span class="fw-semibold">(5)</span>
+      </div>
+      
+      <!-- Review Card 1 -->
+      <div class="card border rounded-3 mb-3">
+        <div class="card-body p-3">
+          <h6 class="fw-semibold small mb-2">Reviewed by Kim A.</h6>
+          <p class="mb-0 small text-muted">
+            Donec dictum tristique porta. Etiam convallis lorem...
+          </p>
+        </div>
+      </div>
+      
+      <!-- Review Card 2 -->
+      <div class="card border rounded-3 mb-3">
+        <div class="card-body p-3">
+          <h6 class="fw-semibold small mb-2">Reviewed by Kim A.</h6>
+          <p class="mb-0 small text-muted">
+            Vanessa is THE only person outside of family that I have trusted...
+          </p>
+        </div>
+      </div>
+      
+      <!-- Review Card 3 -->
+      <div class="card border rounded-3 mb-3">
+        <div class="card-body p-3">
+          <h6 class="fw-semibold small mb-2">Reviewed by Kim A.</h6>
+          <p class="mb-0 small text-muted">
+            She keeps my rowdy children accountable, has great communication...
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== HIGHLIGHTS AND EXTRA INFO ==================== -->
+  <div class="row g-4">
+    
+    <!-- Highlights -->
+    <div class="col-md-6">
+      <div class="card border shadow-sm rounded-3 h-100">
+        <div class="card-body p-4">
+          <h6 class="fw-semibold mb-3">Highlights</h6>
+          <div class="highlight-item mb-2">
+            <i class="bi bi-check2-circle"></i> 
+            Comfortable with pets
+          </div>
+          <div class="highlight-item mb-2">
+            <i class="bi bi-check2-circle"></i> 
+            Non-smoker
+          </div>
+          <div class="highlight-item mb-2">
+            <i class="bi bi-check2-circle"></i> 
+            Alzheimer's or dementia experience
+          </div>
+          <div class="highlight-item mb-2">
+            <i class="bi bi-check2-circle"></i> 
+            Hospice experience
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Can Also Help With -->
+    <div class="col-md-6">
+      <div class="card border shadow-sm rounded-3 h-100">
+        <div class="card-body p-4">
+          <h6 class="fw-semibold mb-3">Can also help with</h6>
+          <ul class="mb-0 ps-3">
+            <li class="mb-2">Bathing</li>
+            <li class="mb-2">Live-in home care</li>
+            <li class="mb-2">Personal care</li>
+            <li class="mb-2">COVID safety</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // ==================== BOOK BUTTON HANDLER ====================
+  document.querySelector('.btn-primary').addEventListener('click', function(e) {
+    // Optional: Add confirmation modal or additional logic
+    console.log('Booking Paula Mora');
+  });
+
+  // ==================== SEND MESSAGE HANDLER ====================
+  document.querySelector('.text-danger').addEventListener('click', function(e) {
+    e.preventDefault();
+    console.log('Opening message dialog');
+    
+    // In production: Open chat modal or redirect to messages
+    alert('Message feature - Coming soon!');
+  });
+
+  // ==================== REVIEW EXPANSION (Optional Enhancement) ====================
+  // You can add "Read more" functionality for long reviews
+  document.querySelectorAll('.card-body p').forEach(review => {
+    if (review.textContent.length > 100) {
+      // Add read more button
+    }
+  });
+
+
+ 
+</script>
+
+{% endblock %}

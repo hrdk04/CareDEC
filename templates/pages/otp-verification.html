@@ -1,0 +1,387 @@
+{% extends "base-auth.html" %}
+
+{% block title %}OTP Verification - {{ app_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ==================== MINIMAL CUSTOM STYLES ==================== */
+  body {
+    background-color: #f9fafb;
+  }
+
+  .otp-container {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .otp-card {
+    max-width: 440px;
+    width: 100%;
+  }
+
+  .otp-input {
+    width: 70px;
+    height: 70px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #111827;
+    transition: all 0.2s;
+  }
+
+  .otp-input:focus {
+    outline: none;
+    border-color: #1d4ed8;
+    box-shadow: 0 0 0 0.2rem rgba(29, 78, 216, 0.25);
+  }
+
+  .resend-link {
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .resend-link:hover {
+    text-decoration: underline !important;
+  }
+
+  @media (max-width: 400px) {
+    .otp-input {
+      width: 55px;
+      height: 55px;
+      font-size: 1.2rem;
+    }
+  }
+
+  @media (max-width: 320px) {
+    .otp-input {
+      width: 48px;
+      height: 48px;
+      font-size: 1.1rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container otp-container">
+  <div class="otp-card px-3">
+    
+    <!-- Card -->
+    <div class="card border-0 shadow-sm rounded-3">
+      <div class="card-body p-4 p-md-5">
+        
+        <!-- Header -->
+        <div class="text-center mb-4">
+          <div class="mb-3">
+          <!-- <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>  -->
+          </div>
+          <h2 class="fw-bold mb-2" id="otpTitle" style="text-align: left;">OTP Verification</h2>
+          <p class="text-muted mb-0" id="otpSubtitle" style="text-align: left;">
+            Enter the OTP sent to your email
+          </p>
+          <p class="text-primary small fw-semibold mb-0" id="userEmail" ></p>
+        </div>
+
+        <!-- OTP Form -->
+        <form id="otpForm">
+          
+          <!-- OTP Code Label -->
+          <label class="form-label fw-semibold text-secondary small mb-2">OTP Code</label>
+          
+          <!-- OTP Input Group -->
+          <div class="d-flex justify-content-center gap-2 gap-md-3 mb-4">
+            <input type="text" maxlength="1" class="otp-input form-control" data-index="0" />
+            <input type="text" maxlength="1" class="otp-input form-control" data-index="1" />
+            <input type="text" maxlength="1" class="otp-input form-control" data-index="2" />
+            <input type="text" maxlength="1" class="otp-input form-control" data-index="3" />
+          </div>
+
+          <!-- Verify Button -->
+          <button type="submit" class="btn btn-primary w-100 rounded-pill py-3 fw-semibold mb-3" id="verifyBtn" >
+            Verify
+          </button>
+
+          <!-- Resend Section -->
+          <div class="text-center">
+            <small class="text-muted">Didn't receive OTP? </small>
+            <a href="#" class="text-primary text-decoration-none fw-semibold resend-link" id="resendBtn" style="color: rgba(1, 107, 238, 1); ">
+              Resend
+            </a>
+          </div>
+
+          <!-- Timer (Optional) -->
+          <div class="text-center mt-2">
+            <small class="text-muted" id="timerText"></small>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // ==================== OTP INPUT AUTO FOCUS & VALIDATION ====================
+  const inputs = document.querySelectorAll(".otp-input");
+  
+  inputs.forEach((input, index) => {
+    // Move to next input on entry
+    input.addEventListener("input", (e) => {
+      const value = e.target.value;
+      
+      // Only allow numbers
+      if (!/^\d$/.test(value)) {
+        e.target.value = '';
+        return;
+      }
+      
+      // Move to next input
+      if (value.length === 1 && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      }
+    });
+    
+    // Handle backspace
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace") {
+        if (input.value === '' && index > 0) {
+          inputs[index - 1].focus();
+          inputs[index - 1].value = '';
+        }
+      }
+    });
+
+    // Handle paste
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const pastedData = e.clipboardData.getData('text').slice(0, 4);
+      
+      if (/^\d{4}$/.test(pastedData)) {
+        pastedData.split('').forEach((char, idx) => {
+          if (inputs[idx]) {
+            inputs[idx].value = char;
+          }
+        });
+        inputs[3].focus();
+      }
+    });
+  });
+
+  // Auto-focus first input
+  inputs[0].focus();
+
+  // ==================== FLOW DETECTION ====================
+  // Get flow from URL parameter or localStorage
+  const urlParams = new URLSearchParams(window.location.search);
+  const otpType = urlParams.get('from') || localStorage.getItem('authFlow') || 'login';
+  
+  console.log('OTP flow detected:', otpType);
+
+  // Flow configuration
+  const flowConfig = {
+    login: {
+      title: "Login Verification",
+      subtitle: "Enter the OTP sent to verify your login",
+      nextPage: "/",
+      icon: "bi-box-arrow-in-right"
+    },
+    signup: {
+      title: "Verify Your Email",
+      subtitle: "Enter the OTP sent to complete your registration",
+      nextPage: "/whoneedcare",
+      icon: "bi-person-check"
+    },
+    'forgot-password': {
+      title: "Password Reset Verification",
+      subtitle: "Enter the OTP sent to reset your password",
+      nextPage: "/reset-pass",
+      icon: "bi-key"
+    }
+  };
+
+  // Get current flow config
+  const currentFlow = flowConfig[otpType] || flowConfig['login'];
+
+  // Update page content based on flow
+  document.getElementById('otpTitle').textContent = currentFlow.title;
+  document.getElementById('otpSubtitle').textContent = currentFlow.subtitle;
+
+  // Display user email if available
+  const userEmail = localStorage.getItem('userEmail');
+  if (userEmail) {
+    document.getElementById('userEmail').textContent = userEmail;
+  }
+
+  // ==================== RESEND OTP WITH TIMER ====================
+  let resendTimer = 60;
+  let timerInterval;
+  const resendBtn = document.getElementById('resendBtn');
+  const timerText = document.getElementById('timerText');
+
+  function startResendTimer() {
+    resendBtn.classList.add('disabled', 'text-muted');
+    resendBtn.classList.remove('text-primary');
+    
+    timerInterval = setInterval(() => {
+      resendTimer--;
+      timerText.textContent = `Resend available in ${resendTimer}s`;
+      
+      if (resendTimer <= 0) {
+        clearInterval(timerInterval);
+        resendBtn.classList.remove('disabled', 'text-muted');
+        resendBtn.classList.add('text-primary');
+        timerText.textContent = '';
+        resendTimer = 60;
+      }
+    }, 1000);
+  }
+
+  // Start timer on load
+  startResendTimer();
+
+  // Resend OTP handler
+  resendBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    if (this.classList.contains('disabled')) {
+      return;
+    }
+    
+    console.log('Resending OTP for:', otpType);
+    
+    // In production: Call backend API
+    // fetch('/api/resend-otp', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ 
+    //     email: userEmail,
+    //     type: otpType 
+    //   })
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //   alert('OTP resent successfully!');
+    //   startResendTimer();
+    // });
+    
+    // For demo
+    alert(`OTP resent to ${userEmail || 'your email'}!`);
+    startResendTimer();
+  });
+
+  // ==================== OTP FORM SUBMISSION ====================
+  document.getElementById('otpForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get OTP value
+    const otpValue = Array.from(inputs).map(inp => inp.value).join('');
+    
+    // Validate OTP length
+    if (otpValue.length !== 4) {
+      alert('Please enter the complete 4-digit OTP.');
+      inputs[0].focus();
+      return;
+    }
+
+    console.log('Verifying OTP:', otpValue, 'for flow:', otpType);
+    
+    // Show loading state
+    const verifyBtn = document.getElementById('verifyBtn');
+    const originalText = verifyBtn.textContent;
+    verifyBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Verifying...';
+    verifyBtn.disabled = true;
+
+    // In production: Send to backend for verification
+    // fetch('/api/verify-otp', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ 
+    //     otp: otpValue,
+    //     email: userEmail,
+    //     type: otpType
+    //   })
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //   if (data.success) {
+    //     // OTP verified, proceed to next step
+    //     window.location.href = currentFlow.nextPage;
+    //   } else {
+    //     alert('Invalid OTP. Please try again.');
+    //     verifyBtn.textContent = originalText;
+    //     verifyBtn.disabled = false;
+    //     inputs.forEach(inp => inp.value = '');
+    //     inputs[0].focus();
+    //   }
+    // })
+    // .catch(error => {
+    //   alert('Error verifying OTP. Please try again.');
+    //   verifyBtn.textContent = originalText;
+    //   verifyBtn.disabled = false;
+    // });
+
+    // For demo: Simulate API call
+    setTimeout(() => {
+      // Mock verification (accept any 4-digit code for demo)
+      console.log('OTP verified successfully!');
+      alert('OTP verified successfully!');
+      
+      // Clear temporary storage after successful verification
+      if (otpType === 'signup') {
+        // User data is verified, can be saved to DB now
+        localStorage.setItem('isVerified', 'true');
+      }
+      
+      // Redirect based on flow
+      window.location.href = currentFlow.nextPage;
+    }, 1500);
+  });
+
+  // ==================== MULTI-LANGUAGE SUPPORT (Optional) ====================
+  const lang = localStorage.getItem("lang") || "en";
+  
+  const translations = {
+    en: {
+      verify: "Verify",
+      didntReceive: "Didn't receive OTP?",
+      resend: "Resend",
+      resendIn: "Resend available in"
+    },
+    ms: {
+      verify: "Sahkan",
+      didntReceive: "Tidak menerima OTP?",
+      resend: "Hantar Semula",
+      resendIn: "Hantar semula tersedia dalam"
+    },
+    th: {
+      verify: "ยืนยัน",
+      didntReceive: "ไม่ได้รับ OTP?",
+      resend: "ส่งอีกครั้ง",
+      resendIn: "ส่งอีกครั้งได้ใน"
+    },
+    id: {
+      verify: "Verifikasi",
+      didntReceive: "Tidak menerima OTP?",
+      resend: "Kirim Ulang",
+      resendIn: "Kirim ulang tersedia dalam"
+    }
+  };
+
+  // Apply translations (optional enhancement)
+  // You can uncomment and use this if needed
+  /*
+  const t = translations[lang];
+  if (t) {
+    document.getElementById('verifyBtn').textContent = t.verify;
+  }
+  */
+</script>
+{% endblock %}

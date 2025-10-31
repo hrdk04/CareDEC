@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+
+{% block title %}Book For - {{ app_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ==================== MINIMAL CUSTOM STYLES ==================== */
+  .booking-time button {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    color: #111827;
+    font-weight: 500;
+  }
+
+  .booking-time button:hover,
+  .booking-time button.active {
+    background: #1e40af;
+    color: white;
+    border-color: #1e40af;
+  }
+
+  .patient-card {
+    transition: 0.2s;
+    cursor: pointer;
+  }
+
+  .patient-card:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05) !important;
+    transform: translateY(-2px);
+  }
+
+  .patient-card.selected {
+    border-color: #1e40af !important;
+    background-color: #eff6ff;
+  }
+
+  .patient-avatar {
+    background: #dbeafe;
+    color: #1e3a8a;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    border-radius: 50%;
+    font-size: 1rem;
+  }
+
+  .stars {
+    color: #f59e0b;
+    font-size: 1.1rem;
+  }
+
+  .check-icon {
+    color: #059669;
+    font-size: 0.9rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-md-5" style="max-width: 480px;">
+
+  <!-- Page Header -->
+  <div class="mb-4">
+    <h4 class="fw-bold text-primary mb-2">Book For?</h4>
+    <p class="text-muted small mb-0">Select Patient for the care</p>
+  </div>
+
+  <!-- Doctor/Caregiver Profile Card -->
+  <div class="card border shadow-sm rounded-3 mb-3">
+    <div class="card-body p-3">
+      <div class="d-flex align-items-center gap-3">
+        <img 
+          src="https://i.pravatar.cc/100?img=5" 
+          alt="Paula Mora" 
+          class="rounded-3"
+          style="width: 60px; height: 60px; object-fit: cover;"
+        />
+        <div>
+          <h6 class="mb-1 fw-bold">Paula Mora</h6>
+          <div class="d-flex align-items-center gap-1 mb-1">
+            <div class="stars">★★★★★</div>
+            <span class="fw-bold small">(5)</span>
+          </div>
+          <div class="check-icon small">
+            <i class="bi bi-check-circle-fill me-1"></i>
+            Background check done
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Price -->
+  <div class="text-primary fw-bold fs-5 mb-3">$59/hr</div>
+
+  <!-- Booking Section -->
+  <div class="card border shadow-sm rounded-3 mb-3">
+    <div class="card-body p-3">
+      
+      <!-- Booking Date -->
+      <label class="form-label fw-semibold mb-2">Booking Date</label>
+      <input type="date" class="form-control mb-3" id="bookingDate">
+
+      <!-- Booking Time -->
+      <label class="form-label fw-semibold mb-2">Booking Time</label>
+      <div class="booking-time d-flex gap-2 flex-wrap">
+        <button type="button" data-time="1:55 am">1:55 am</button>
+        <button type="button" data-time="2:55 am">2:55 am</button>
+        <button type="button" data-time="3:55 am">3:55 am</button>
+        <button type="button" data-time="4:55 am">4:55 am</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Patient List -->
+  <div class="mb-3">
+    <h6 class="fw-semibold mb-3">Select Patient</h6>
+
+    <!-- Patient Card 1 -->
+    <div class="card border shadow-sm rounded-3 mb-3 patient-card" data-patient-id="1">
+      <div class="card-body p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-3">
+            <div class="patient-avatar">OR</div>
+            <div>
+              <h6 class="mb-0 fw-semibold">Olivia Rhye</h6>
+              <small class="text-muted">21 years</small>
+            </div>
+          </div>
+          <div class="text-muted small d-flex align-items-center gap-1">
+            <i class="bi bi-gender-female"></i> 
+            <span>Female</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient Card 2 -->
+    <div class="card border shadow-sm rounded-3 mb-3 patient-card" data-patient-id="2">
+      <div class="card-body p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-3">
+            <div class="patient-avatar">OR</div>
+            <div>
+              <h6 class="mb-0 fw-semibold">Olivia Rhye</h6>
+              <small class="text-muted">21 years</small>
+            </div>
+          </div>
+          <div class="text-muted small d-flex align-items-center gap-1">
+            <i class="bi bi-gender-female"></i> 
+            <span>Female</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient Card 3 -->
+    <div class="card border shadow-sm rounded-3 mb-3 patient-card" data-patient-id="3">
+      <div class="card-body p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-3">
+            <div class="patient-avatar">OR</div>
+            <div>
+              <h6 class="mb-0 fw-semibold">Olivia Rhye</h6>
+              <small class="text-muted">21 years</small>
+            </div>
+          </div>
+          <div class="text-muted small d-flex align-items-center gap-1">
+            <i class="bi bi-gender-female"></i> 
+            <span>Female</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add New Patient Link -->
+  <div class="text-center mb-4">
+    <a href="#" class="text-primary fw-semibold text-decoration-none" id="addPatientBtn">
+      <i class="bi bi-plus-circle me-1"></i>
+      Add new Patient
+    </a>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="d-flex justify-content-between gap-3">
+    <a href="/booking" class="btn btn-outline-primary rounded-pill px-4 flex-fill">Cancel</a>
+    <button type="button" class="btn btn-primary rounded-pill px-4 flex-fill" id="bookBtn">Book</button>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // ==================== BOOKING TIME SELECTION ====================
+  let selectedTime = null;
+  
+  document.querySelectorAll('.booking-time button').forEach(btn => {
+    btn.addEventListener('click', function() {
+      // Remove active from all
+      document.querySelectorAll('.booking-time button').forEach(b => b.classList.remove('active'));
+      
+      // Add active to clicked
+      this.classList.add('active');
+      selectedTime = this.getAttribute('data-time');
+      
+      console.log('Selected time:', selectedTime);
+    });
+  });
+
+  // ==================== PATIENT SELECTION ====================
+  let selectedPatient = null;
+  
+  document.querySelectorAll('.patient-card').forEach(card => {
+    card.addEventListener('click', function() {
+      // Remove selected from all
+      document.querySelectorAll('.patient-card').forEach(c => c.classList.remove('selected'));
+      
+      // Add selected to clicked
+      this.classList.add('selected');
+      selectedPatient = this.getAttribute('data-patient-id');
+      
+      console.log('Selected patient:', selectedPatient);
+    });
+  });
+
+  // ==================== ADD NEW PATIENT ====================
+  document.getElementById('addPatientBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    // Redirect to add patient page
+    window.location.href = '/enter-member-details';
+  });
+
+  // ==================== BOOK BUTTON ====================
+  document.getElementById('bookBtn').addEventListener('click', function() {
+    const bookingDate = document.getElementById('bookingDate').value;
+    
+    // Validation
+    if (!bookingDate) {
+      alert('Please select a booking date');
+      return;
+    }
+    
+    if (!selectedTime) {
+      alert('Please select a booking time');
+      return;
+    }
+    
+    if (!selectedPatient) {
+      alert('Please select a patient');
+      return;
+    }
+    
+    // Collect booking data
+    const bookingData = {
+      caregiver: 'Paula Mora',
+      patient_id: selectedPatient,
+      date: bookingDate,
+      time: selectedTime,
+      hourly_rate: 59
+    };
+    
+    console.log('Booking data:', bookingData);
+    /*
+      {% for patient in patients %}
+      <div class="card patient-card" data-patient-id="{{ patient.id }}">
+        ...
+      </div>
+    {% endfor %}
+    */
+    // In production, send to backend
+    // fetch('/api/bookings', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(bookingData)
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //   window.location.href = '/appointment';
+    // });
+    
+    // For now, show success and redirect
+    alert('Booking confirmed!');
+    window.location.href = '/appointment';
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base-auth.html" %}
+
+{% block title %}404 - Page Not Found | {{ app_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ==================== MINIMAL CUSTOM STYLES ==================== */
+  body {
+    background-color: #fff;
+  }
+
+  .error-container {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .error-number {
+    font-size: 8rem;
+    font-weight: 700;
+    color: #1d4ed8;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @media (max-width: 576px) {
+    .error-number {
+      font-size: 6rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container error-container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="text-center px-3">
+        
+        <!-- Error Icon/Number -->
+        <div class="mb-4">
+          <i class="bi bi-exclamation-triangle-fill text-warning d-block mb-3" style="font-size: 4rem;"></i>
+          <div class="error-number">404</div>
+        </div>
+
+        <!-- Error Message -->
+        <h2 class="fw-bold mb-3 fs-3">Page not found</h2>
+        <p class="text-muted mb-4 fs-6">
+          Sorry, the page you are looking for doesn't exist or has been moved.
+        </p>
+
+        <!-- Actions -->
+        <div class="d-flex flex-row flex-sm-row gap-3 justify-content-center mb-4 w-max-content">
+          <a href="/" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">
+            <i class="bi bi-house-door me-2"></i>
+            Go to Home
+          </a>
+          <button onclick="history.back()" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-semibold">
+            <i class="bi bi-arrow-left me-2"></i>
+            Go Back
+          </button>
+        </div>
+
+        <!-- Helpful Links -->
+        <div class="mt-5 pt-4 border-top">
+          <p class="text-muted small mb-3">You might be looking for:</p>
+          <div class="d-flex flex-wrap justify-content-center gap-2">
+            <a href="/" class="badge bg-light text-primary text-decoration-none px-3 py-2 rounded-pill border">
+              Browse Caregivers
+            </a>
+            <a href="/login" class="badge bg-light text-primary text-decoration-none px-3 py-2 rounded-pill border">
+              Login
+            </a>
+            <a href="/register" class="badge bg-light text-primary text-decoration-none px-3 py-2 rounded-pill border">
+              Sign Up
+            </a>
+            <a href="/contact" class="badge bg-light text-primary text-decoration-none px-3 py-2 rounded-pill border">
+              Contact Support
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Log 404 error for analytics
+  console.error('404 Error: Page not found -', window.location.pathname);
+
+  // Optional: Send to analytics
+  // if (typeof gtag !== 'undefined') {
+  //   gtag('event', 'exception', {
+  //     'description': '404 - Page not found',
+  //     'fatal': false
+  //   });
+  // }
+
+  // Auto-redirect after 10 seconds (optional)
+  // setTimeout(() => {
+  //   if (confirm('Page not found. Redirect to homepage?')) {
+  //     window.location.href = '/';
+  //   }
+  // }, 10000);
+</script>
+{% endblock %}

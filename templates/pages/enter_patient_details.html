@@ -1,0 +1,241 @@
+{% extends "base-auth.html" %}
+
+{% block title %}Enter Patient Details - {{ app_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ==================== MINIMAL CUSTOM STYLES ==================== */
+  .location-btn {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: white;
+    padding: 0.8rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #111827;
+    font-weight: 500;
+  }
+
+  .location-btn:hover {
+    background-color: #f8fafc;
+    border-color: #1d4ed8;
+  }
+
+  .location-btn:active {
+    transform: scale(0.98);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4 py-md-5" style="max-width: 540px;">
+
+  <!-- Page Header -->
+  <div class="mb-4">
+    <h4 class="fw-bold mb-2">Enter patient details</h4>
+    <p class="text-muted small mb-0">Need to add perfect details</p>
+  </div>
+
+  <!-- Form -->
+  <form method="POST" action="/enter-patient-details">
+
+    <!-- Location Button -->
+    <div class="mb-4">
+      <button type="button" class="location-btn" onclick="getLocation()">
+        <span>
+          <i class="fas fa-crosshairs me-2 text-primary"></i>
+          Use my current location
+        </span>
+        <i class="bi bi-chevron-right text-muted"></i>
+      </button>
+    </div>
+
+    <!-- Address Line 1 -->
+    <div class="mb-3">
+      <label for="address1" class="form-label fw-semibold">Address Line 1</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="address1"
+        name="address1" 
+        placeholder="Enter address" 
+        required
+      />
+    </div>
+
+    <!-- Address Line 2 -->
+    <div class="mb-3">
+      <label for="address2" class="form-label fw-semibold">Address Line 2</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="address2"
+        name="address2" 
+        placeholder="Enter address"
+      />
+    </div>
+
+    <!-- Country and State -->
+    <div class="row g-3 mb-3">
+      <div class="col-6">
+        <label for="country" class="form-label fw-semibold">Country</label>
+        <select class="form-select" id="country" name="country" required>
+          <option value="">Select Country</option>
+          <option value="India">India</option>
+          <option value="Australia">Australia</option>
+          <option value="USA">USA</option>
+        </select>
+      </div>
+      <div class="col-6">
+        <label for="state" class="form-label fw-semibold">State</label>
+        <select class="form-select" id="state" name="state" required>
+          <option value="">Select State</option>
+          <option value="Maharashtra">Maharashtra</option>
+          <option value="New South Wales">New South Wales</option>
+          <option value="California">California</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- City and Pin Code -->
+    <div class="row g-3 mb-4">
+      <div class="col-6">
+        <label for="city" class="form-label fw-semibold">City</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="city"
+          name="city" 
+          placeholder="Enter city" 
+          required
+        />
+      </div>
+      <div class="col-6">
+        <label for="pincode" class="form-label fw-semibold">Pin Code</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="pincode"
+          name="pincode" 
+          placeholder="Enter pin code" 
+          required
+        />
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <button type="submit" class="btn btn-primary rounded-pill w-100 py-3 fw-semibold shadow-sm">
+      Save
+    </button>
+
+  </form>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // ==================== GEOLOCATION FUNCTION ====================
+  function getLocation() {
+    if (navigator.geolocation) {
+      // Show loading state
+      const btn = document.querySelector('.location-btn');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<span><i class="fas fa-spinner fa-spin me-2"></i>Getting location...</span>';
+      btn.disabled = true;
+      
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          
+          console.log('Location found:', { lat, lon });
+          
+          // In production: Use reverse geocoding API to get address
+          // fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=YOUR_API_KEY`)
+          //   .then(response => response.json())
+          //   .then(data => {
+          //     const address = data.results[0].components;
+          //     document.getElementById('address1').value = address.road || '';
+          //     document.getElementById('city').value = address.city || '';
+          //     document.getElementById('state').value = address.state || '';
+          //     document.getElementById('pincode').value = address.postcode || '';
+          //   });
+          
+          // For demo purposes
+          alert(`Location found: ${lat}, ${lon}\n\nIn production, this will auto-fill your address.`);
+          
+          // Reset button
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          alert('Unable to get location. Please enter address manually.');
+          
+          // Reset button
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+        }
+      );
+    } else {
+      alert('Geolocation is not supported by your browser.');
+    }
+  }
+
+  // ==================== FORM VALIDATION ====================
+  document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    console.log('Patient details submitted:', data);
+    
+    // In production: Send to backend
+    // fetch('/api/patient-details', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(data)
+    // })
+    // .then(response => response.json())
+    // .then(result => {
+    //   window.location.href = '/success';
+    // });
+    
+    // For demo purposes
+    alert('Patient details saved successfully!');
+    window.location.href = '/success';
+  });
+
+  // ==================== STATE BASED ON COUNTRY ====================
+  document.getElementById('country').addEventListener('change', function() {
+    const stateSelect = document.getElementById('state');
+    const country = this.value;
+    
+    // Clear existing options
+    stateSelect.innerHTML = '<option value="">Select State</option>';
+    
+    // State options based on country
+    const stateOptions = {
+      'India': ['Maharashtra', 'Gujarat', 'Karnataka', 'Tamil Nadu', 'Delhi'],
+      'Australia': ['New South Wales', 'Victoria', 'Queensland', 'Western Australia'],
+      'USA': ['California', 'New York', 'Texas', 'Florida', 'Illinois']
+    };
+    
+    if (stateOptions[country]) {
+      stateOptions[country].forEach(state => {
+        const option = document.createElement('option');
+        option.value = state;
+        option.textContent = state;
+        stateSelect.appendChild(option);
+      });
+    }
+  });
+</script>
+{% endblock %}

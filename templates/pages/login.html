@@ -1,0 +1,240 @@
+{% extends "base-auth.html" %}
+
+{% block title %}Login - {{ app_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ==================== MINIMAL CUSTOM STYLES ==================== */
+  body {
+    background-color: #f9fafb;
+  }
+
+  .login-container {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-card {
+    max-width: 440px;
+    width: 100%;
+  }
+
+  .toggle-password {
+    cursor: pointer;
+    color: #6b7280;
+  }
+
+  .toggle-password:hover {
+    color: #1d4ed8;
+  }
+
+  @media (max-width: 576px) {
+    .login-container {
+      padding: 1rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container login-container">
+  <div class="login-card">
+    
+    <!-- Card -->
+    <div class="card border-0 shadow-sm rounded-3">
+      <div class="card-body p-4 p-md-5">
+        
+        <!-- Header -->
+        <div class="text-center mb-4">
+          <h2 class="fw-bold mb-2" id="loginTitle">Log In</h2>
+          <p class="text-muted mb-0" id="welcomeText">Welcome to CareDac</p>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm">
+          
+          <!-- Email -->
+          <div class="mb-3">
+            <label for="email" class="form-label fw-semibold" id="emailLabel">Email</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-envelope text-muted"></i>
+              </span>
+              <input 
+                type="email" 
+                id="email" 
+                class="form-control border-start-0" 
+                placeholder="Enter email"
+                required 
+              />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label for="password" class="form-label fw-semibold" id="passwordLabel">Password</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-lock text-muted"></i>
+              </span>
+              <input 
+                type="password" 
+                id="password" 
+                class="form-control border-start-0 border-end-0" 
+                placeholder="Enter password"
+                required 
+              />
+              <button 
+                class="btn border bg-white toggle-password" 
+                type="button" 
+                id="togglePassword"
+                tabindex="-1"
+              >
+                <i class="bi bi-eye-slash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Forgot Password Link -->
+          <div class="text-end mb-4">
+            <a href="/forget-pass" class="text-primary text-decoration-none small fw-semibold" id="forgotText">
+              Forgot Password?
+            </a>
+          </div>
+
+          <!-- Login Button -->
+          <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-semibold mb-3" id="loginBtn">
+            Log In
+          </button>
+
+          <!-- Divider -->
+          <div class="text-center mb-3">
+            <small class="text-muted" id="noAccountText">Don't have an account?</small>
+            <a href="/register" class="text-primary text-decoration-none fw-semibold ms-1" id="signUpText">Sign Up</a>
+          </div>
+
+          <!-- OTP Verification Link (for testing) -->
+          <div class="text-center">
+            <small class="text-muted">For testing:</small>
+            <a href="/otp?from=login" class="text-secondary text-decoration-none fw-semibold ms-1">OTP Verification</a>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // ==================== PASSWORD TOGGLE ====================
+  const togglePassword = document.getElementById("togglePassword");
+  const passwordInput = document.getElementById("password");
+
+  togglePassword.addEventListener("click", () => {
+    const isPassword = passwordInput.type === "password";
+    passwordInput.type = isPassword ? "text" : "password";
+    togglePassword.innerHTML = isPassword
+      ? '<i class="bi bi-eye"></i>'
+      : '<i class="bi bi-eye-slash"></i>';
+  });
+
+  // ==================== MULTI-LANGUAGE SUPPORT ====================
+  const lang = localStorage.getItem("lang") || "en";
+
+  const translations = {
+    en: {
+      loginTitle: "Log In",
+      welcomeText: "Welcome to CareDac",
+      emailLabel: "Email",
+      passwordLabel: "Password",
+      forgotText: "Forgot Password?",
+      loginBtn: "Log In",
+      noAccountText: "Don't have an account?",
+      signUpText: "Sign Up"
+    },
+    ms: {
+      loginTitle: "Log Masuk",
+      welcomeText: "Selamat datang ke CareDac",
+      emailLabel: "E-mel",
+      passwordLabel: "Kata Laluan",
+      forgotText: "Terlupa Kata Laluan?",
+      loginBtn: "Log Masuk",
+      noAccountText: "Tiada akaun?",
+      signUpText: "Daftar"
+    },
+    th: {
+      loginTitle: "เข้าสู่ระบบ",
+      welcomeText: "ยินดีต้อนรับสู่ CareDac",
+      emailLabel: "อีเมล",
+      passwordLabel: "รหัสผ่าน",
+      forgotText: "ลืมรหัสผ่าน?",
+      loginBtn: "เข้าสู่ระบบ",
+      noAccountText: "ยังไม่มีบัญชี?",
+      signUpText: "สมัครสมาชิก"
+    },
+    id: {
+      loginTitle: "Masuk",
+      welcomeText: "Selamat datang di CareDac",
+      emailLabel: "Email",
+      passwordLabel: "Kata Sandi",
+      forgotText: "Lupa Kata Sandi?",
+      loginBtn: "Masuk",
+      noAccountText: "Belum punya akun?",
+      signUpText: "Daftar"
+    }
+  };
+
+  // Apply language
+  const t = translations[lang];
+  if (t) {
+    document.getElementById("loginTitle").textContent = t.loginTitle;
+    document.getElementById("welcomeText").textContent = t.welcomeText;
+    document.getElementById("emailLabel").textContent = t.emailLabel;
+    document.getElementById("passwordLabel").textContent = t.passwordLabel;
+    document.getElementById("forgotText").textContent = t.forgotText;
+    document.getElementById("loginBtn").textContent = t.loginBtn;
+    document.getElementById("noAccountText").textContent = t.noAccountText;
+    document.getElementById("signUpText").textContent = t.signUpText;
+  }
+
+  // ==================== LOGIN FORM SUBMISSION ====================
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    console.log('Login attempt:', { email, password });
+    
+    // ==================== IMPORTANT: FLOW CONTROL ====================
+    // Store the flow context - where we're coming from
+    localStorage.setItem('authFlow', 'login');
+    localStorage.setItem('userEmail', email);
+    
+    // In production: Send to backend for authentication
+    // fetch('/api/login', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ email, password })
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //   if (data.requires_otp) {
+    //     window.location.href = '/otp?from=login';
+    //   } else {
+    //     window.location.href = '/';
+    //   }
+    // });
+    
+    // For demo: Redirect to OTP page with context
+    alert('Login successful! Redirecting to OTP verification...');
+    window.location.href = '/otp?from=login';
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends "base-auth.html" %}
+
+{% block title %}500 - Server Error | {{ app_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ==================== MINIMAL CUSTOM STYLES ==================== */
+  body {
+    background-color: #fff;
+  }
+
+  .error-container {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .error-number {
+    font-size: 8rem;
+    font-weight: 700;
+    color: #dc2626;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  @media (max-width: 576px) {
+    .error-number {
+      font-size: 6rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container error-container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="text-center px-3">
+        
+        <!-- Error Icon/Number -->
+        <div class="mb-4">
+          <i class="bi bi-x-octagon-fill text-danger d-block mb-3" style="font-size: 4rem;"></i>
+          <div class="error-number">500</div>
+        </div>
+
+        <!-- Error Message -->
+        <h2 class="fw-bold mb-3 fs-3">Internal Server Error</h2>
+        <p class="text-muted mb-4 fs-6">
+          Something went wrong on our end. We're working to fix it. Please try again later.
+        </p>
+
+        <!-- Error Details (only in development) -->
+        {% if config.DEBUG %}
+        <div class="alert alert-warning text-start small mb-4">
+          <strong>Debug Info:</strong>
+          <p class="mb-1"><strong>Error:</strong> {{ error }}</p>
+          <p class="mb-0"><strong>Path:</strong> {{ request.path }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-4">
+          <a href="/" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">
+            <i class="bi bi-house-door me-2"></i>
+            Back to Home
+          </a>
+          <button onclick="location.reload()" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-semibold">
+            <i class="bi bi-arrow-clockwise me-2"></i>
+            Try Again
+          </button>
+        </div>
+
+        <!-- Support Information -->
+        <div class="mt-5 pt-4 border-top">
+          <p class="text-muted small mb-3">Need immediate help?</p>
+          <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+            <a href="/contact" class="btn btn-sm btn-outline-primary rounded-pill">
+              <i class="bi bi-envelope me-2"></i>
+              Contact Support
+            </a>
+            <a href="mailto:support@caredac.com" class="btn btn-sm btn-outline-primary rounded-pill">
+              <i class="bi bi-envelope-at me-2"></i>
+              Email Us
+            </a>
+          </div>
+          <p class="text-muted small mt-3 mb-0">
+            Error ID: <code>{{ request_id }}</code>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Log 500 error for monitoring
+  console.error('500 Error: Internal server error -', window.location.pathname);
+
+  // Optional: Send to error tracking service (Sentry, etc.)
+  // if (typeof Sentry !== 'undefined') {
+  //   Sentry.captureException(new Error('500 Internal Server Error'));
+  // }
+
+  // Auto-retry after 5 seconds (optional)
+  // let countdown = 5;
+  // const retryBtn = document.querySelector('.btn-outline-secondary');
+  // const interval = setInterval(() => {
+  //   countdown--;
+  //   retryBtn.innerHTML = `<i class="bi bi-arrow-clockwise me-2"></i>Retry in ${countdown}s`;
+  //   if (countdown === 0) {
+  //     clearInterval(interval);
+  //     location.reload();
+  //   }
+  // }, 1000);
+</script>
+{% endblock %}
