@@ -543,6 +543,8 @@ def book_patient():
     return render_template("pages/book_patient.html")
 
 
+# ==================== CAREGIVER & BOOKING ROUTES (UPDATED) ====================
+
 @app.route('/appointment')
 # @login_required  # Uncomment in production
 def appointment():
@@ -553,9 +555,159 @@ def appointment():
     # BACKEND INTEGRATION:
     # appointments = make_api_request(f"users/{session.get('user_id')}/appointments", method='GET')
     # current = [a for a in appointments if a['status'] == 'active']
-    # upcoming = [a for a in appointments if a['status'] == 'upcoming']
+    # previous = [a for a in appointments if a['status'] == 'completed']
     
     return render_template('pages/appointments.html')
+
+
+@app.route('/appointment/current-booking')
+@app.route('/appointment/current-booking/<int:booking_id>')
+# @login_required  # Uncomment in production
+def current_booking_details(booking_id=None):
+    """
+    CURRENT booking details page
+    Shows active/ongoing booking with Call and Make Payment options
+    """
+    # Default to booking 1 if no ID provided
+    if booking_id is None:
+        booking_id = 1
+    
+    # BACKEND INTEGRATION:
+    # booking = make_api_request(f'bookings/{booking_id}', method='GET')
+    # if not booking or booking.get('status') != 'active':
+    #     flash('Current booking not found', 'warning')
+    #     return redirect(url_for('appointment'))
+    # return render_template('pages/booking-details.html', booking=booking)
+    
+    # Mock current booking data
+    booking = {
+        'id': booking_id,
+        'caregiver_id': 101,
+        'caregiver_name': 'Paula Mora',
+        'caregiver_role': 'Part-Time Caregiver',
+        'caregiver_image': 'https://i.pravatar.cc/150?img=5',
+        'rating': 5,
+        'total_payment': '$4,584.43',
+        'booking_date': 'Oct 17, 2023',
+        'booking_time': '1:55 AM',
+        'patient_name': 'Stephanie Sharkey',
+        'patient_age': '3 Yrs',
+        'patient_gender': 'Male',
+        'hourly_rate': '$59/hr',
+        'experience': '5 years',
+        'language': 'English',
+        'description': 'I am a 22-year-old graduate student pursuing my Master\'s in Social Work. I have 5 years of experience caring for children from newborn to 7 years.',
+        'status': 'active',  # IMPORTANT: This makes it a CURRENT booking
+        'show_map': True,
+        'notes': [
+            {'date': 'Nov 1, 2023 3:10 PM', 'content': 'Patient is doing well. Medication administered on time.'},
+            {'date': 'Nov 2, 2023 10:15 AM', 'content': 'Morning routine completed successfully.'},
+        ]
+    }
+    
+    return render_template('pages/booking-details.html', booking=booking)
+
+
+@app.route('/appointment/previous-booking')
+@app.route('/appointment/previous-booking/<int:booking_id>')
+# @login_required  # Uncomment in production
+def previous_booking_details(booking_id=None):
+    """
+    PREVIOUS booking details page
+    Shows completed booking with Rebook option
+    """
+    # Default to booking 2 if no ID provided
+    if booking_id is None:
+        booking_id = 2
+    
+    # BACKEND INTEGRATION:
+    # booking = make_api_request(f'bookings/{booking_id}', method='GET')
+    # if not booking or booking.get('status') != 'completed':
+    #     flash('Previous booking not found', 'warning')
+    #     return redirect(url_for('appointment'))
+    # return render_template('pages/booking-details.html', booking=booking)
+    
+    # Mock previous bookings data
+    bookings_data = {
+        2: {
+            'id': 2,
+            'caregiver_id': 102,
+            'caregiver_name': 'Stephanie Sharkey',
+            'caregiver_role': 'Full-Time Caregiver',
+            'caregiver_image': 'https://i.pravatar.cc/150?img=8',
+            'rating': 4.8,
+            'total_payment': '$3,200.00',
+            'booking_date': 'Oct 18, 2023',
+            'booking_time': '1:55 AM',
+            'patient_name': 'John Doe',
+            'patient_age': '28 yrs',
+            'patient_gender': 'Male',
+            'hourly_rate': '$45/hr',
+            'experience': '4 years',
+            'language': 'English, Spanish',
+            'description': 'Experienced full-time caregiver with expertise in elderly care and medical support.',
+            'status': 'completed',  # IMPORTANT: This makes it a PREVIOUS booking
+            'show_map': False,
+            'notes': []
+        },
+        3: {
+            'id': 3,
+            'caregiver_id': 103,
+            'caregiver_name': 'Alex Buckmaster',
+            'caregiver_role': 'Night Sitter',
+            'caregiver_image': 'https://i.pravatar.cc/150?img=10',
+            'rating': 4.9,
+            'total_payment': '$2,100.00',
+            'booking_date': 'Oct 19, 2023',
+            'booking_time': '2:00 AM',
+            'patient_name': 'Mary Johnson',
+            'patient_age': '35 yrs',
+            'patient_gender': 'Female',
+            'hourly_rate': '$35/hr',
+            'experience': '6 years',
+            'language': 'English',
+            'description': 'Specialized in overnight care with extensive experience in patient monitoring.',
+            'status': 'completed',
+            'show_map': False,
+            'notes': []
+        },
+        4: {
+            'id': 4,
+            'caregiver_id': 101,
+            'caregiver_name': 'Paula Mora',
+            'caregiver_role': 'Part-Time Caregiver',
+            'caregiver_image': 'https://i.pravatar.cc/150?img=5',
+            'rating': 5,
+            'total_payment': '$1,800.00',
+            'booking_date': 'Oct 20, 2023',
+            'booking_time': '3:00 AM',
+            'patient_name': 'Robert Smith',
+            'patient_age': '33 yrs',
+            'patient_gender': 'Female',
+            'hourly_rate': '$59/hr',
+            'experience': '5 years',
+            'language': 'English',
+            'description': 'Dedicated caregiver with a passion for helping others.',
+            'status': 'completed',
+            'show_map': False,
+            'notes': []
+        }
+    }
+    
+    booking = bookings_data.get(booking_id)
+    if not booking:
+        flash('Booking not found', 'warning')
+        return redirect(url_for('appointment'))
+    
+    return render_template('pages/booking-details.html', booking=booking)
+
+
+# Remove this old route (no longer needed)
+# @app.route('/appointment/current-booking')
+# def currentBooking():
+#     return render_template('pages/current-booking.html')
+
+
 
 
 @app.route('/payments')
