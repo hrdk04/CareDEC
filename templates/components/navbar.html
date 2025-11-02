@@ -408,8 +408,13 @@
             John Doe
           </button>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-            <li><a class="dropdown-item" href="/profile"><i class="bi bi-person me-2"></i>Profile</a></li>
-            <li><a class="dropdown-item" href="/settings"><i class="bi bi-lock me-2"></i>Change Password</a></li>
+            <!-- In components/navbar.html -->
+            <a href="{{ url_for('profile') }}" class="dropdown-item">
+              <i class="bi bi-person me-2"></i>Profile
+            </a>
+            <a href="http://127.0.0.1:5000/reset-pass" class="dropdown-item">
+              <i class="bi bi-lock me-2"></i>Change Password
+            </a>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
           </ul>

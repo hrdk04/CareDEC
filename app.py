@@ -754,6 +754,834 @@ def success():
     return render_template('pages/login.html', message=message)
 
 
+
+# ==================== PROFILE ROUTES ====================
+
+@app.route('/profile')
+@login_required  # Uncomment in production
+def profile():
+    """
+    User Profile Page
+    Shows user info, conditions, special needs, services, family members, payments
+    """
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/profile', method='GET')
+    # 
+    # if response and response.get('success'):
+    #     user_data = response.get('data')
+    #     return render_template('pages/profile/profile.html', user=user_data)
+    # else:
+    #     flash('Unable to load profile', 'error')
+    #     return redirect(url_for('index'))
+    
+    # Mock data for development (will be replaced with real data from backend)
+    user = {
+        "id": 1,
+        "full_name": "John Doe",
+        "email": "john@example.com",
+        "mobile": "+91 9876543210",
+        "emergency_mobile": "+91 9876543211",
+        "dob": "1995-05-12",
+        "gender": "Male",
+        "address_line1": "2323 Dancing Dove Lane",
+        "address_line2": "Long Island City",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "country": "India",
+        "pincode": "400001",
+        "profile_image": None,  # Set to None to use default avatar, or add URL: "https://i.pravatar.cc/200?img=47"
+        
+        # Medical info
+        "conditions": [
+            {"id": 1, "name": "Improvement of Health Fitness"},
+            {"id": 2, "name": "Covid 19 recovery"}
+        ],
+        "special_needs": [
+            {"id": 1, "name": "Bathing"},
+            {"id": 2, "name": "Walk on morning"},
+            {"id": 3, "name": "Personal care"}
+        ],
+        "services": [
+            {"id": 1, "name": "Personals care"},
+            {"id": 2, "name": "Domestic Assistance"},
+            {"id": 3, "name": "Out and About Transport"}
+        ],
+        
+        # Family members
+        "family_members": [
+            {
+                "id": 1,
+                "name": "Olivia Rhye",
+                "age": 21,
+                "gender": "Male",
+                "initials": "OR"
+            },
+            {
+                "id": 2,
+                "name": "Emma Smith",
+                "age": 25,
+                "gender": "Female",
+                "initials": "ES"
+            }
+        ],
+        
+        # Payment methods
+        "payment_methods": [
+            {
+                "id": 1,
+                "card_name": "Samarth Patel",
+                "card_number": "1234-5678-9012-1234",
+                "card_number_masked": "1234",
+                "expiry": "12/25",
+                "is_primary": True
+            },
+            {
+                "id": 2,
+                "card_name": "Samarth Patel",
+                "card_number": "5678-1234-5678-5678",
+                "card_number_masked": "5678",
+                "expiry": "08/26",
+                "is_primary": False
+            }
+        ]
+    }
+    
+    return render_template('pages/profile/profile.html', user=user)
+
+@app.route('/edit-profile', methods=['GET', 'POST'])
+@login_required  # Uncomment in production
+def edit_profile():
+    """
+    Edit Profile Page
+    GET: Show form with current user data
+    POST: Update user profile
+    """
+    if request.method == 'POST':
+        # Collect form data
+        profile_data = {
+            'full_name': request.form.get('fullname'),
+            'dob': request.form.get('dob'),
+            'email': request.form.get('email'),
+            'mobile': request.form.get('mobile'),
+            'emergency_mobile': request.form.get('emergency'),
+            'gender': request.form.get('gender'),
+            'address_line1': request.form.get('addr1'),
+            'address_line2': request.form.get('addr2'),
+            'country': request.form.get('country'),
+            'state': request.form.get('state'),
+            'city': request.form.get('city'),
+            'pincode': request.form.get('pin')
+        }
+        
+        # BACKEND INTEGRATION:
+        # user_id = session.get('user_id')
+        # response = make_api_request(f'users/{user_id}/profile', method='PUT', data=profile_data)
+        # 
+        # if response and response.get('success'):
+        #     flash('Profile updated successfully!', 'success')
+        #     return redirect(url_for('profile'))
+        # else:
+        #     flash('Failed to update profile. Please try again.', 'error')
+        
+        # For demo:
+        print("Profile update data:", profile_data)
+        flash('Profile updated successfully!', 'success')
+        return redirect(url_for('profile'))
+    
+    # GET: Load current profile data
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/profile', method='GET')
+    # user_data = response.get('data') if response else {}
+    
+    # Mock data
+    user_data = {
+        "full_name": "John Doe",
+        "email": "john@example.com",
+        "mobile": "+91 9876543210",
+        "emergency_mobile": "+91 9876543211",
+        "dob": "1995-05-12",
+        "gender": "Male",
+        "address_line1": "2323 Dancing Dove Lane",
+        "address_line2": "Apartment 4B",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "country": "India",
+        "pincode": "400001"
+    }
+    
+    return render_template('pages/profile/edit_profile.html', user=user_data)
+
+
+@app.route('/edit-condition', methods=['GET', 'POST'])
+@login_required  # Uncomment in production
+def edit_condition():
+    """
+    Edit Medical Conditions
+    Manages user's health conditions
+    """
+    if request.method == 'POST':
+        data = request.get_json()
+        conditions = data.get('conditions', [])
+        
+        # BACKEND INTEGRATION:
+        # user_id = session.get('user_id')
+        # response = make_api_request(f'users/{user_id}/conditions', method='PUT', data={
+        #     'conditions': conditions
+        # })
+        # 
+        # if response and response.get('success'):
+        #     return jsonify({'success': True, 'message': 'Conditions updated successfully'})
+        # else:
+        #     return jsonify({'success': False, 'message': 'Failed to update conditions'}), 400
+        
+        # For demo:
+        print("Updated conditions:", conditions)
+        return jsonify({'success': True, 'message': 'Conditions updated successfully'})
+    
+    # GET: Load current conditions
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/conditions', method='GET')
+    # conditions = response.get('conditions', []) if response else []
+    
+    # Mock data
+    conditions = [
+        {"id": 1, "name": "Improvement of Health Fitness"},
+        {"id": 2, "name": "Covid 19 recovery"}
+    ]
+    
+    return render_template('pages/profile/condition.html', conditions=conditions)
+
+
+@app.route('/edit-special-needs', methods=['GET', 'POST'])
+@login_required  # Uncomment in production
+def special_needs():
+    """
+    Edit Special Needs
+    Manages user's special care requirements
+    """
+    if request.method == 'POST':
+        data = request.get_json()
+        needs = data.get('needs', [])
+        
+        # BACKEND INTEGRATION:
+        # user_id = session.get('user_id')
+        # response = make_api_request(f'users/{user_id}/special-needs', method='PUT', data={
+        #     'special_needs': needs
+        # })
+        # 
+        # if response and response.get('success'):
+        #     return jsonify({'success': True, 'message': 'Special needs updated successfully'})
+        # else:
+        #     return jsonify({'success': False, 'message': 'Failed to update special needs'}), 400
+        
+        # For demo:
+        print("Updated special needs:", needs)
+        return jsonify({'success': True, 'message': 'Special needs updated successfully'})
+    
+    # GET: Load current special needs
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/special-needs', method='GET')
+    # needs = response.get('special_needs', []) if response else []
+    
+    # Mock data
+    needs = [
+        {"id": 1, "name": "Bathing"},
+        {"id": 2, "name": "Walk on morning"},
+        {"id": 3, "name": "Personal care"}
+    ]
+    
+    return render_template('pages/profile/special_needs.html', needs=needs)
+
+
+@app.route('/edit-services', methods=['GET', 'POST'])
+@login_required  # Uncomment in production
+def services():
+    """
+    Edit Required Services
+    Manages services user needs
+    """
+    if request.method == 'POST':
+        data = request.get_json()
+        selected_services = data.get('services', [])
+        
+        # BACKEND INTEGRATION:
+        # user_id = session.get('user_id')
+        # response = make_api_request(f'users/{user_id}/services', method='PUT', data={
+        #     'services': selected_services
+        # })
+        # 
+        # if response and response.get('success'):
+        #     return jsonify({'success': True, 'message': 'Services updated successfully'})
+        # else:
+        #     return jsonify({'success': False, 'message': 'Failed to update services'}), 400
+        
+        # For demo:
+        print("Updated services:", selected_services)
+        return jsonify({'success': True, 'message': 'Services updated successfully'})
+    
+    # GET: Load available and selected services
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/services', method='GET')
+    # services_data = response.get('services', []) if response else []
+    
+    # Mock data - all available services
+    services_data = [
+        {"id": 1, "name": "Personals care", "value": "personal", "selected": True},
+        {"id": 2, "name": "Domestic Assistance", "value": "domestic", "selected": True},
+        {"id": 3, "name": "Social Support & Community Participation", "value": "social", "selected": False},
+        {"id": 4, "name": "Specialist Care", "value": "specialist", "selected": False},
+        {"id": 5, "name": "Out and About Transport", "value": "transport", "selected": True},
+        {"id": 6, "name": "Relief Respite Care", "value": "respite", "selected": False},
+        {"id": 7, "name": "Coaching & Counselling", "value": "counselling", "selected": False},
+        {"id": 8, "name": "Disability Products", "value": "products", "selected": False}
+    ]
+    
+    return render_template('pages/profile/services.html', services=services_data)
+
+
+# ==================== PAYMENT METHOD ROUTES ====================
+
+@app.route('/edit-payment/<int:payment_id>', methods=['GET', 'POST'])
+@login_required  # Uncomment in production
+def edit_payment(payment_id):
+    """
+    Edit existing payment method
+    """
+    if request.method == 'POST':
+        payment_data = {
+            'card_name': request.form.get('card_name'),
+            'card_number': request.form.get('card_number'),
+            'expiry': request.form.get('expiry'),
+            'cvv': request.form.get('cvv'),
+            'is_primary': request.form.get('is_primary') == 'on'
+        }
+        
+        # BACKEND INTEGRATION:
+        # user_id = session.get('user_id')
+        # response = make_api_request(f'users/{user_id}/payment-methods/{payment_id}', 
+        #                            method='PUT', 
+        #                            data=payment_data)
+        # 
+        # if response and response.get('success'):
+        #     flash('Payment method updated successfully!', 'success')
+        #     return redirect(url_for('profile'))
+        # else:
+        #     flash('Failed to update payment method', 'error')
+        
+        # For demo:
+        print(f"Update payment {payment_id}:", payment_data)
+        flash('Payment method updated successfully!', 'success')
+        return redirect(url_for('profile'))
+    
+    # GET: Load payment method details
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/payment-methods/{payment_id}', method='GET')
+    # payment = response.get('payment_method', {}) if response else {}
+    
+    # Mock data
+    payment = {
+        "id": payment_id,
+        "card_name": "Samarth Patel",
+        "card_number": "1234-1234-1234-1234",
+        "expiry": "12/25",
+        "is_primary": True
+    }
+    
+    return render_template('pages/profile/edit_payment.html', payment=payment)
+
+
+@app.route('/add-payment', methods=['GET', 'POST'])
+@login_required  # Uncomment in production
+def add_payment():
+    """
+    Add new payment method
+    """
+    if request.method == 'POST':
+        payment_data = {
+            'card_name': request.form.get('card_name'),
+            'card_number': request.form.get('card_number'),
+            'expiry': request.form.get('expiry'),
+            'cvv': request.form.get('cvv'),
+            'is_primary': request.form.get('is_primary') == 'on'
+        }
+        
+        # BACKEND INTEGRATION:
+        # user_id = session.get('user_id')
+        # response = make_api_request(f'users/{user_id}/payment-methods', 
+        #                            method='POST', 
+        #                            data=payment_data)
+        # 
+        # if response and response.get('success'):
+        #     flash('Payment method added successfully!', 'success')
+        #     return redirect(url_for('profile'))
+        # else:
+        #     flash('Failed to add payment method', 'error')
+        
+        # For demo:
+        print("New payment method:", payment_data)
+        flash('Payment method added successfully!', 'success')
+        return redirect(url_for('profile'))
+    
+    return render_template('pages/profile/add_payment.html')
+
+
+@app.route('/delete-payment/<int:payment_id>', methods=['POST'])
+@login_required  # Uncomment in production
+def delete_payment(payment_id):
+    """
+    Delete payment method
+    """
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/payment-methods/{payment_id}', method='DELETE')
+    # 
+    # if response and response.get('success'):
+    #     flash('Payment method deleted successfully!', 'success')
+    # else:
+    #     flash('Failed to delete payment method', 'error')
+    
+    # For demo:
+    print(f"Delete payment method: {payment_id}")
+    flash('Payment method deleted successfully!', 'success')
+    return redirect(url_for('profile'))
+
+
+# ==================== FAMILY MEMBER ROUTES ====================
+
+@app.route('/family-member/<int:member_id>')
+@login_required  # Uncomment in production
+def family_member_details(member_id):
+    """
+    View family member details
+    """
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/family-members/{member_id}', method='GET')
+    # 
+    # if response and response.get('success'):
+    #     member = response.get('member')
+    #     return render_template('pages/profile/family_member_details.html', member=member)
+    # else:
+    #     flash('Family member not found', 'error')
+    #     return redirect(url_for('profile'))
+    
+    # Mock data for demo
+    members_data = {
+        1: {
+            "id": 1,
+            "name": "Olivia Rhye",
+            "age": 21,
+            "gender": "Male",
+            "initials": "OR",
+            "dob": "Jan 24th 1997",
+            "relationship": "Son",
+            "mobile": "+91 9876543210",
+            "address": "31, Xavier Colony, Akhbar nagar, Ahmedabad, Gujarat-382732",
+            "medical_notes": None
+        },
+        2: {
+            "id": 2,
+            "name": "Emma Smith",
+            "age": 25,
+            "gender": "Female",
+            "initials": "ES",
+            "dob": "Dec 15th 1998",
+            "relationship": "Daughter",
+            "mobile": "+91 9876543211",
+            "address": "31, Xavier Colony, Akhbar nagar, Ahmedabad, Gujarat-382732",
+            "medical_notes": "Allergic to penicillin"
+        }
+    }
+    
+    member = members_data.get(member_id)
+    
+    if not member:
+        flash('Family member not found', 'error')
+        return redirect(url_for('profile'))
+    
+    return render_template('pages/profile/family_member_details.html', member=member)
+
+
+@app.route('/add-family-member', methods=['GET', 'POST'])
+@login_required  # Uncomment in production
+def add_family_member():
+    """
+    Add new family member
+    """
+    if request.method == 'POST':
+        member_data = {
+            'name': request.form.get('name'),
+            'age': request.form.get('age'),
+            'gender': request.form.get('gender'),
+            'dob': request.form.get('dob'),
+            'relationship': request.form.get('relationship'),
+            'mobile': request.form.get('mobile'),
+            'address': request.form.get('address'),
+            'medical_notes': request.form.get('medical_notes')
+        }
+        
+        # BACKEND INTEGRATION:
+        # user_id = session.get('user_id')
+        # response = make_api_request(f'users/{user_id}/family-members', 
+        #                            method='POST', 
+        #                            data=member_data)
+        # 
+        # if response and response.get('success'):
+        #     flash('Family member added successfully!', 'success')
+        #     return redirect(url_for('profile'))
+        # else:
+        #     flash('Failed to add family member', 'error')
+        
+        # For demo:
+        print("New family member:", member_data)
+        flash('Family member added successfully!', 'success')
+        return redirect(url_for('profile'))
+    
+    return render_template('pages/profile/add_family_member.html')
+
+
+@app.route('/edit-family-member/<int:member_id>', methods=['GET', 'POST'])
+@login_required  # Uncomment in production
+def edit_family_member(member_id):
+    """
+    Edit family member details
+    """
+    if request.method == 'POST':
+        member_data = {
+            'name': request.form.get('name'),
+            'age': request.form.get('age'),
+            'gender': request.form.get('gender'),
+            'dob': request.form.get('dob'),
+            'relationship': request.form.get('relationship'),
+            'mobile': request.form.get('mobile'),
+            'address': request.form.get('address'),
+            'medical_notes': request.form.get('medical_notes')
+        }
+        
+        # BACKEND INTEGRATION:
+        # user_id = session.get('user_id')
+        # response = make_api_request(f'users/{user_id}/family-members/{member_id}', 
+        #                            method='PUT', 
+        #                            data=member_data)
+        # 
+        # if response and response.get('success'):
+        #     flash('Family member updated successfully!', 'success')
+        #     return redirect(url_for('family_member_details', member_id=member_id))
+        # else:
+        #     flash('Failed to update family member', 'error')
+        
+        # For demo:
+        print(f"Update family member {member_id}:", member_data)
+        flash('Family member updated successfully!', 'success')
+        return redirect(url_for('family_member_details', member_id=member_id))
+    
+    # GET: Load member details
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/family-members/{member_id}', method='GET')
+    # member = response.get('member', {}) if response else {}
+    
+    # Mock data
+    member = {
+        "id": member_id,
+        "name": "Olivia Rhye",
+        "age": 21,
+        "gender": "Male",
+        "dob": "1997-01-24",
+        "relationship": "Son",
+        "mobile": "+91 9876543210",
+        "address": "31, Xavier Colony, Akhbar nagar, Ahmedabad, Gujarat-382732",
+        "medical_notes": ""
+    }
+    
+    return render_template('pages/profile/edit_family_member.html', member=member)
+
+
+@app.route('/delete-family-member/<int:member_id>', methods=['POST'])
+@login_required  # Uncomment in production
+def delete_family_member(member_id):
+    """
+    Delete family member
+    """
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/family-members/{member_id}', method='DELETE')
+    # 
+    # if response and response.get('success'):
+    #     flash('Family member removed successfully!', 'success')
+    # else:
+    #     flash('Failed to remove family member', 'error')
+    
+    # For demo:
+    print(f"Delete family member: {member_id}")
+    flash('Family member removed successfully!', 'success')
+    return redirect(url_for('profile'))
+
+# ==================== SETTINGS & ACCOUNT ROUTES ====================
+
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required  # Uncomment in production
+def settings():
+    """
+    User settings page - Change password, preferences, etc.
+    """
+    if request.method == 'POST':
+        action = request.form.get('action')
+        
+        # Change Password
+        if action == 'change_password':
+            password_data = {
+                'current_password': request.form.get('current_password'),
+                'new_password': request.form.get('new_password'),
+                'confirm_password': request.form.get('confirm_password')
+            }
+            
+            # Validation
+            if password_data['new_password'] != password_data['confirm_password']:
+                flash('New passwords do not match', 'error')
+                return redirect(url_for('settings'))
+            
+            # BACKEND INTEGRATION:
+            # user_id = session.get('user_id')
+            # response = make_api_request(f'users/{user_id}/change-password', 
+            #                            method='POST', 
+            #                            data=password_data)
+            # 
+            # if response and response.get('success'):
+            #     flash('Password changed successfully!', 'success')
+            #     return redirect(url_for('settings'))
+            # else:
+            #     flash('Failed to change password. Current password may be incorrect.', 'error')
+            
+            # For demo:
+            flash('Password changed successfully!', 'success')
+            return redirect(url_for('settings'))
+        
+        # Update Notification Preferences
+        elif action == 'update_notifications':
+            notification_prefs = {
+                'email_notifications': request.form.get('email_notifications') == 'on',
+                'sms_notifications': request.form.get('sms_notifications') == 'on',
+                'booking_reminders': request.form.get('booking_reminders') == 'on',
+                'promotional_emails': request.form.get('promotional_emails') == 'on'
+            }
+            
+            # BACKEND INTEGRATION:
+            # user_id = session.get('user_id')
+            # response = make_api_request(f'users/{user_id}/notification-preferences', 
+            #                            method='PUT', 
+            #                            data=notification_prefs)
+            # 
+            # if response and response.get('success'):
+            #     flash('Notification preferences updated!', 'success')
+            # else:
+            #     flash('Failed to update preferences', 'error')
+            
+            # For demo:
+            flash('Notification preferences updated!', 'success')
+            return redirect(url_for('settings'))
+    
+    # GET: Load current settings
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/settings', method='GET')
+    # user_settings = response.get('settings', {}) if response else {}
+    
+    # Mock data
+    user_settings = {
+        'email_notifications': True,
+        'sms_notifications': True,
+        'booking_reminders': True,
+        'promotional_emails': False
+    }
+    
+    return render_template('pages/settings.html', settings=user_settings)
+
+
+@app.route('/notifications')
+@login_required  # Uncomment in production
+def notifications():
+    """
+    User notifications page
+    """
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/notifications', method='GET')
+    # notifications_data = response.get('notifications', []) if response else []
+    
+    # Mock data
+    notifications_data = [
+        {
+            "id": 1,
+            "title": "Booking Confirmed",
+            "message": "Your booking with Paula Mora has been confirmed for Oct 17, 2023",
+            "type": "success",
+            "read": False,
+            "created_at": "2023-10-15 10:30 AM"
+        },
+        {
+            "id": 2,
+            "title": "Payment Successful",
+            "message": "Payment of $4,584.43 processed successfully",
+            "type": "info",
+            "read": True,
+            "created_at": "2023-10-14 03:45 PM"
+        },
+        {
+            "id": 3,
+            "title": "Appointment Reminder",
+            "message": "You have an appointment tomorrow at 1:55 AM",
+            "type": "warning",
+            "read": False,
+            "created_at": "2023-10-13 09:00 AM"
+        }
+    ]
+    
+    return render_template('pages/notifications.html', notifications=notifications_data)
+
+
+@app.route('/notifications/<int:notification_id>/mark-read', methods=['POST'])
+@login_required  # Uncomment in production
+def mark_notification_read(notification_id):
+    """
+    Mark notification as read
+    """
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # response = make_api_request(f'users/{user_id}/notifications/{notification_id}/read', 
+    #                            method='PUT')
+    # 
+    # if response and response.get('success'):
+    #     return jsonify({'success': True})
+    # else:
+    #     return jsonify({'success': False}), 400
+    
+    # For demo:
+    return jsonify({'success': True})
+
+
+# ==================== PROFILE API ENDPOINTS (for AJAX) ====================
+
+@app.route('/api/profile/upload-image', methods=['POST'])
+@login_required  # Uncomment in production
+def api_upload_profile_image():
+    """
+    Upload profile image via AJAX
+    """
+    if 'file' not in request.files:
+        return jsonify({'success': False, 'message': 'No file provided'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({'success': False, 'message': 'No file selected'}), 400
+    
+    # Validate file type
+    allowed_extensions = {'png', 'jpg', 'jpeg', 'gif'}
+    if '.' not in file.filename or file.filename.rsplit('.', 1)[1].lower() not in allowed_extensions:
+        return jsonify({'success': False, 'message': 'Invalid file type. Only images allowed.'}), 400
+    
+    # BACKEND INTEGRATION:
+    # user_id = session.get('user_id')
+    # 
+    # # Upload to Django backend or cloud storage (S3, Cloudinary, etc.)
+    # files = {'file': (file.filename, file.stream, file.content_type)}
+    # response = make_api_request(f'users/{user_id}/profile/upload-image', 
+    #                            method='POST', 
+    #                            files=files)
+    # 
+    # if response and response.get('success'):
+    #     return jsonify({
+    #         'success': True,
+    #         'image_url': response.get('image_url'),
+    #         'message': 'Image uploaded successfully'
+    #     })
+    # else:
+    #     return jsonify({'success': False, 'message': 'Failed to upload image'}), 500
+    
+    # For demo:
+    return jsonify({
+        'success': True,
+        'image_url': 'https://i.pravatar.cc/180?img=47',
+        'message': 'Image uploaded successfully'
+    })
+
+
+@app.route('/api/profile/get-location', methods=['POST'])
+@login_required  # Uncomment in production
+def api_get_location():
+    """
+    Get address from GPS coordinates (reverse geocoding)
+    """
+    data = request.get_json()
+    latitude = data.get('latitude')
+    longitude = data.get('longitude')
+    
+    if not latitude or not longitude:
+        return jsonify({'success': False, 'message': 'Coordinates required'}), 400
+    
+    # BACKEND INTEGRATION:
+    # response = make_api_request('geocode/reverse', method='POST', data={
+    #     'latitude': latitude,
+    #     'longitude': longitude
+    # })
+    # 
+    # if response and response.get('success'):
+    #     return jsonify({
+    #         'success': True,
+    #         'address': response.get('address'),
+    #         'city': response.get('city'),
+    #         'state': response.get('state'),
+    #         'country': response.get('country'),
+    #         'pincode': response.get('pincode')
+    #     })
+    
+    # For demo (mock geocoding):
+    return jsonify({
+        'success': True,
+        'address': '2323 Dancing Dove Lane, Long Island City',
+        'city': 'Mumbai',
+        'state': 'Maharashtra',
+        'country': 'India',
+        'pincode': '400001'
+    })
+
+
+@app.route('/api/profile/validate-email', methods=['POST'])
+def api_validate_email():
+    """
+    Check if email is already registered
+    Used for real-time validation during registration/profile edit
+    """
+    data = request.get_json()
+    email = data.get('email')
+    
+    if not email:
+        return jsonify({'success': False, 'message': 'Email required'}), 400
+    
+    # BACKEND INTEGRATION:
+    # response = make_api_request('auth/check-email', method='POST', data={'email': email})
+    # 
+    # if response:
+    #     return jsonify({
+    #         'success': True,
+    #         'available': response.get('available'),
+    #         'message': 'Email available' if response.get('available') else 'Email already registered'
+    #     })
+    
+    # For demo:
+    return jsonify({
+        'success': True,
+        'available': email != 'john@example.com',
+        'message': 'Email available' if email != 'john@example.com' else 'Email already registered'
+    })
+
 # ==================== API ROUTES (for AJAX calls) ====================
 
 @app.route('/api/caregivers/filter', methods=['POST'])
